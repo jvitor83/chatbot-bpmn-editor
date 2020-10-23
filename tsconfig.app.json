@@ -2,7 +2,11 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": []
+    "types": [],
+    "typeRoots": [
+      "./src/app/bpmnjs-typings/types",
+      "node_modules/@types"
+    ]
   },
   "files": [
     "src/main.ts",
