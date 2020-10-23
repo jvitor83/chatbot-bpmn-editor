@@ -24,14 +24,17 @@
     "@ionic-native/status-bar": "^5.0.0",
     "@ionic/angular": "^5.0.0",
     "@types/js-yaml": "^3.12.5",
+    "@types/object-hash": "^1.3.4",
     "bpmn-js": "^7.3.1",
     "bpmn-js-cli": "^2.0.0",
     "fast-xml-parser": "^3.17.4",
     "file-saver": "^2.0.2",
     "js-yaml": "^3.14.0",
     "json2md": "^1.9.0",
+    "object-hash": "^2.0.3",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",
+    "uuid": "^8.3.1",
     "zone.js": "~0.10.3"
   },
   "devDependencies": {

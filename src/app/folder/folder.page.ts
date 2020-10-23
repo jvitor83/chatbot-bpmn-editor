@@ -241,7 +241,7 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
 
 
         this.fileGeneratorService.generateIntents(files.intents);
-        this.fileGeneratorService.generateUtters(files.utters);
+        this.fileGeneratorService.generateUtters(files.utters, files.intents);
         this.fileGeneratorService.generateStories(files.stories);
 
       }));

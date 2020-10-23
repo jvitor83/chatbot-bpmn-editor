@@ -82,7 +82,8 @@ export class SimulationGeneratorService {
 
     // tslint:disable-next-line: max-line-length
     const apontaParaElementoAnterior: boolean = this.nextElementIsInPreviousElementOfPath(proximoElemento, caminho); // this.checkIfAlreadyHasThisPath(cloneDoCaminho, caminhos);
-    if (!apontaParaElementoAnterior) {
+    const proximoElementoEUltimoSaoSequence = proximoElemento.$type === 'bpmn:SequenceFlow' && caminho[caminho.length - 1].$type === 'bpmn:SequenceFlow';
+    if ((!apontaParaElementoAnterior) && (!proximoElementoEUltimoSaoSequence)) {
       caminhos.push(cloneDoCaminho);
       this.recursiveElement(proximoElemento, cloneDoCaminho, caminhos);
     }

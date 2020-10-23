@@ -39,15 +39,15 @@ export class FileGeneratorService {
     saveAs(blob, 'nlu.md');
   }
 
-  generateUtters(utters: Utter[]) {
+  generateUtters(utters: Utter[], intents: Intent[]) {
     const objetoDasProps = {};
     const objetoinner = utters.map(utter => {
       objetoDasProps[utter.name] = utter.items.map(i => ({ text: `${i}` }));
     });
     const objeto2 = {
+      intents: intents.map(i => i.name),
       responses: objetoDasProps
     };
-
 
     const resposta = safeDump(objeto2, {  });
     const blob = new Blob([resposta], { type: 'text/plain;charset=utf-8' });
