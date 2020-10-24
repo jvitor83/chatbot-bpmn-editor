@@ -85,7 +85,7 @@ export class DialogGeneratorService {
         intentWithUtters = novoIntentWithUtters;
         intentsWithUtters.push(intentWithUtters);
       } else if (dialogItem.type === 'AnswerUtter') {
-        intentWithUtters.utters.push({ name: dialogItem.id, items: descriptionSplitted });
+        intentWithUtters.utters.push({ name: `utter_${dialogItem.id}`, items: descriptionSplitted });
       }
     });
     return intentsWithUtters;

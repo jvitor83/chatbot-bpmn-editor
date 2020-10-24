@@ -6,6 +6,7 @@ import * as BpmnJS from 'bpmn-js/dist/bpmn-modeler.development.js';
 import { parse } from 'fast-xml-parser';
 // import { BPMNModdle, BPMNModdleConstructor, *asBpmnModdle } from 'bpmn-moddle';
 import BPMNModdle, { Definitions, ElementType, FlowNode, Process, StartEvent } from 'bpmn-moddle';
+import { saveAs } from 'file-saver';
 
 
 
@@ -171,11 +172,11 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
 
 
   constructor(private activatedRoute: ActivatedRoute,
-              private http: HttpClient,
-              private simulationService: SimulationGeneratorService,
-              private dialogConverterService: DialogConverterService,
-              private dialogGeneratorService: DialogGeneratorService,
-              private fileGeneratorService: FileGeneratorService,
+    private http: HttpClient,
+    private simulationService: SimulationGeneratorService,
+    private dialogConverterService: DialogConverterService,
+    private dialogGeneratorService: DialogGeneratorService,
+    private fileGeneratorService: FileGeneratorService,
   ) {
     this.bpmnJS = new Modeler({ additionalModules: [PalleteProviderModule as DJSModule] } as ViewerOptions);
 
@@ -188,7 +189,7 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
 
   ngOnInit() {
     this.folder = this.activatedRoute.snapshot.paramMap.get('id');
-    this.loadUrl('https://cdn.staticaly.com/gh/bpmn-io/bpmn-js-examples/dfceecba/starter/diagram.bpmn');
+    // this.loadUrl('https://cdn.staticaly.com/gh/bpmn-io/bpmn-js-examples/dfceecba/starter/diagram.bpmn');
   }
 
 
@@ -198,10 +199,10 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    // re-import whenever the url changes
-    if (changes.url) {
-      this.loadUrl(changes.url.currentValue);
-    }
+    // // re-import whenever the url changes
+    // if (changes.url) {
+    //   this.loadUrl(changes.url.currentValue);
+    // }
   }
 
   ngOnDestroy(): void {
@@ -209,6 +210,55 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
     this.bpmnJS.destroy();
 
     // this.viewer.attachTo(this.el.nativeElement);
+  }
+
+  new() {
+    this.bpmnJS.createDiagram(() => {
+      
+    });
+  }
+
+  dispFile(contents) {
+    this.bpmnJS.importXML(contents, (err, warnings) => {
+
+    });
+  }
+  clickElem(elem) {
+    // Thx user1601638 on Stack Overflow (6/6/2018 - https://stackoverflow.com/questions/13405129/javascript-create-and-save-file )
+    let eventMouse = document.createEvent('MouseEvents');
+    eventMouse.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+    elem.dispatchEvent(eventMouse);
+  }
+  openFile(func) {
+    const readFile = (e) => {
+      let file = e.target.files[0];
+      if (!file) {
+        return;
+      }
+      let reader = new FileReader();
+      reader.onload = (e) => {
+        let contents = e.target.result;
+        ((fileInput as any).func as Function).apply(this, [contents]);
+        document.body.removeChild(fileInput);
+      };
+      reader.readAsText(file);
+    };
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.style.display = 'none';
+    fileInput.onchange = readFile;
+    (fileInput as any).func = func;
+    document.body.appendChild(fileInput);
+    this.clickElem(fileInput);
+  }
+
+
+  save() {
+    this.bpmnJS.saveXML({ format: true, preamble: true }, (err, resultXmlString) => {
+      const xml = resultXmlString as any as string;
+      const blob = new Blob([xml], { type: 'text/plain;charset=utf-8' });
+      saveAs(blob, `bpmn-chatbot-${new Date().toISOString().split(':').join('').split('-').join('').split('.').join('').split('Z').join('')}.xml`);
+    });
   }
 
   async export() {
@@ -338,28 +388,28 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
   //   }
   // }
 
-  loadUrl(url: string) {
+  // loadUrl(url: string) {
 
-    return (
-      this.http.get(url, { responseType: 'text' }).pipe(
-        // catchError(err => throwError(err)),
-        importDiagram(this.bpmnJS)
-      ).subscribe(
-        (warnings) => {
-          this.importDone.emit({
-            type: 'success',
-            warnings
-          });
-        },
-        (err) => {
-          this.importDone.emit({
-            type: 'error',
-            error: err
-          });
-        }
-      )
-    );
-  }
+  //   return (
+  //     this.http.get(url, { responseType: 'text' }).pipe(
+  //       // catchError(err => throwError(err)),
+  //       importDiagram(this.bpmnJS)
+  //     ).subscribe(
+  //       (warnings) => {
+  //         this.importDone.emit({
+  //           type: 'success',
+  //           warnings
+  //         });
+  //       },
+  //       (err) => {
+  //         this.importDone.emit({
+  //           type: 'error',
+  //           error: err
+  //         });
+  //       }
+  //     )
+  //   );
+  // }
 
 
 }

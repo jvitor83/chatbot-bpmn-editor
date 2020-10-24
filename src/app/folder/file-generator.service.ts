@@ -16,10 +16,57 @@ export class FileGeneratorService {
         { h2: storie.name },
         // { ul: ['intent', { ul: ['utter1', 'utter2'] }] }
         {
-          ul: storie.path.map(caminho => ([caminho.intent.name, { ul: caminho.utters.map(u => (u.name)) }]))
+          ul_star: storie.path.map(caminho => ([caminho.intent.name, { ul: caminho.utters.map(u => (u.name)) }]))
         }
       ];
     });
+
+    let indent = (content, spaces, ignoreFirst) => {
+      let lines = content
+
+      if (typeof content === "string") {
+        lines = content.split("\n")
+      }
+
+      if (ignoreFirst) {
+        if (lines.length <= 1) {
+          return lines.join("\n")
+        }
+        return lines[0] + "\n" + indent(lines.slice(1), spaces, false)
+      }
+
+      return lines.map(c => " ".repeat(spaces) + c).join("\n")
+    }
+
+    let parseTextFormat = text => {
+
+      let formats = {
+        strong: "**"
+        , italic: "*"
+      }
+
+      return text
+        .replace(/<\/?strong\>/gi, formats.strong)
+        .replace(/<\/?bold\>/gi, formats.strong)
+        .replace(/<\/?em\>/gi, formats.italic)
+        .replace(/<\/?italic\>/gi, formats.italic)
+
+    }
+
+    json2md.converters.ul_star = (input, json2md) => {
+      let c = ""
+      for (let i = 0; i < input.length; ++i) {
+        let marker = ""
+
+        let type = Object.keys(input[i])[0]
+        if (type !== "ul" && type !== "ol") {
+          marker += "\n * "
+        }
+
+        c += marker + parseTextFormat(indent(json2md(input[i]), 4, true))
+      }
+      return c
+    }
 
     const resposta = json2md(stringMd);
     const blob = new Blob([resposta], { type: 'text/plain;charset=utf-8' });
@@ -40,8 +87,10 @@ export class FileGeneratorService {
   }
 
   generateUtters(utters: Utter[], intents: Intent[]) {
-    const objetoDasProps = {};
-    const objetoinner = utters.map(utter => {
+    const objetoDasProps = {
+      utter_fallback: "Sorry, i couldn't understand what you meant! Please try again!"
+    };
+    utters.map(utter => {
       objetoDasProps[utter.name] = utter.items.map(i => ({ text: `${i}` }));
     });
     const objeto2 = {
@@ -49,9 +98,9 @@ export class FileGeneratorService {
       responses: objetoDasProps
     };
 
-    const resposta = safeDump(objeto2, {  });
+    const resposta = safeDump(objeto2, {});
     const blob = new Blob([resposta], { type: 'text/plain;charset=utf-8' });
-    saveAs(blob, 'utters.yml');
+    saveAs(blob, 'domain.yml');
   }
 
   constructor() { }
