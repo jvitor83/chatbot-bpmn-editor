@@ -88,7 +88,7 @@ export class FileGeneratorService {
 
   generateUtters(utters: Utter[], intents: Intent[]) {
     const objetoDasProps = {
-      utter_fallback: "Sorry, i couldnt understand what you meant! Please try again!"
+      utter_fallback: [{ text: "Sorry, i couldnt understand what you meant! Please try again!" }]
     };
     utters.map(utter => {
       objetoDasProps[utter.name] = utter.items.map(i => ({ text: `${i}` }));
