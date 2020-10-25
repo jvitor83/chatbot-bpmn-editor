@@ -7,6 +7,7 @@ import { parse } from 'fast-xml-parser';
 // import { BPMNModdle, BPMNModdleConstructor, *asBpmnModdle } from 'bpmn-moddle';
 import BPMNModdle, { Definitions, ElementType, FlowNode, Process, StartEvent } from 'bpmn-moddle';
 import { saveAs } from 'file-saver';
+import { AlertController } from '@ionic/angular';
 
 
 
@@ -186,6 +187,19 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
       }
     });
   }
+  
+  
+ presentAlert(error) {
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Error',
+      message: error',
+      buttons: ['OK']
+    });
+
+    alert.present();
+  }
+  
 
   ngOnInit() {
     this.folder = this.activatedRoute.snapshot.paramMap.get('id');
@@ -268,8 +282,13 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
       console.log(imagem);
       const moddle = new BPMNModdle();
       console.log(moddle.fromXML);
+      if (!imagem) {
+        this.presentAlert('No file or result content!');
+      }
       const promiseFromXML = (moddle as any).fromXML(imagem) as any as Promise<{ rootElement: Definitions }>;
-      promiseFromXML.then((val => {
+      promiseFromXML.catch(e => {
+        this.presentAlert(JSON.stringify(e));
+      }).then((val => {
         console.log('definitions', val);
         const process = val.rootElement.rootElements.filter(e => e.$type === 'bpmn:Process')[0] as Process;
         const startEvent = process.flowElements.filter(e => e.$type === 'bpmn:StartEvent')[0] as StartEvent;
