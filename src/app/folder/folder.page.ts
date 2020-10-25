@@ -190,7 +190,7 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
   
   
  presentAlert(error) {
-    const alert = await this.alertController.create({
+    const alert = this.alertController.create({
       cssClass: 'my-custom-class',
       header: 'Error',
       message: error,
