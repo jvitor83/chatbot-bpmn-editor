@@ -198,7 +198,7 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
       buttons: ['OK']
     });
 
-    alert.present();
+    alert.present().then(e => {});
   }
   
 
