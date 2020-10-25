@@ -287,9 +287,7 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
         this.presentAlert('No file or result content!');
       }
       const promiseFromXML = (moddle as any).fromXML(imagem) as any as Promise<{ rootElement: Definitions }>;
-      promiseFromXML.catch(e => {
-        this.presentAlert(JSON.stringify(e));
-      }).then((val => {
+      promiseFromXML.then((val => {
         console.log('definitions', val);
         const process = val.rootElement.rootElements.filter(e => e.$type === 'bpmn:Process')[0] as Process;
         const startEvent = process.flowElements.filter(e => e.$type === 'bpmn:StartEvent')[0] as StartEvent;
@@ -314,7 +312,9 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
         this.fileGeneratorService.generateUtters(files.utters, files.intents);
         this.fileGeneratorService.generateStories(files.stories);
 
-      }));
+      .catch(e => {
+        this.presentAlert(JSON.stringify(e));
+      });
 
 
       // const resultJsObj = parse(imagem, { parseAttributeValue: true, ignoreAttributes: false, attributeNamePrefix: '' }) as BpmnObject;
