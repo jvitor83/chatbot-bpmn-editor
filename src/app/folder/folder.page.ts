@@ -193,7 +193,7 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
     const alert = await this.alertController.create({
       cssClass: 'my-custom-class',
       header: 'Error',
-      message: error',
+      message: error,
       buttons: ['OK']
     });
 
