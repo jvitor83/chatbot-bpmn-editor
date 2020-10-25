@@ -312,7 +312,7 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
         this.fileGeneratorService.generateUtters(files.utters, files.intents);
         this.fileGeneratorService.generateStories(files.stories);
 
-      .catch(e => {
+      )).catch(e => {
         this.presentAlert(JSON.stringify(e));
       });
 
