@@ -178,6 +178,7 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
     private dialogConverterService: DialogConverterService,
     private dialogGeneratorService: DialogGeneratorService,
     private fileGeneratorService: FileGeneratorService,
+    private alertController: AlertController,
   ) {
     this.bpmnJS = new Modeler({ additionalModules: [PalleteProviderModule as DJSModule] } as ViewerOptions);
 
