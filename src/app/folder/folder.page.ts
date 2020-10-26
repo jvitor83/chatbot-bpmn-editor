@@ -203,7 +203,8 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
   
 
   ngOnInit() {
-    this.folder = this.activatedRoute.snapshot.paramMap.get('id');
+    this.new();
+    // this.folder = this.activatedRoute.snapshot.paramMap.get('id');
     // this.loadUrl('https://cdn.staticaly.com/gh/bpmn-io/bpmn-js-examples/dfceecba/starter/diagram.bpmn');
   }
 
