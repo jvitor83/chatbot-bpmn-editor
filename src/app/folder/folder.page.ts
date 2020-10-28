@@ -188,9 +188,9 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
       }
     });
   }
-  
-  
- presentAlert(error) {
+
+
+  presentAlert(error) {
     const alert = this.alertController.create({
       cssClass: 'my-custom-class',
       header: 'Error',
@@ -200,7 +200,7 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
 
     alert.then(e => e.present());
   }
-  
+
 
   ngOnInit() {
     this.new();
@@ -230,7 +230,7 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
 
   new() {
     this.bpmnJS.createDiagram(() => {
-      
+
     });
   }
 
@@ -305,7 +305,19 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
 
         console.log('simulacoes', dialogos);
 
-        const files = this.dialogGeneratorService.generate(dialogos);
+        // Remove o primeiro intent (desconsiderando o start)
+        // Remove o ultimo utter (desconsiderando o end)
+        const dialogosToGenerate = [] as Dialog[];
+        dialogos.forEach(dialogo => {
+          const items = [...dialogo.items];
+          items.shift();
+          items.pop();
+          const dialogoToPush = { id: dialogo.id, name: dialogo.name } as Dialog;
+          dialogoToPush.items = items;
+          dialogosToGenerate.push(dialogoToPush);
+        });
+
+        const files = this.dialogGeneratorService.generate(dialogosToGenerate);
         console.log('files', files);
 
 
