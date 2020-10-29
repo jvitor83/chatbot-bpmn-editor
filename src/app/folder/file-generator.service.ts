@@ -97,8 +97,15 @@ export class FileGeneratorService {
       intents: intents.map(i => i.name),
       responses: objetoDasProps
     };
+    const config = {
+      session_config: {
+        session_expiration_time: 60.0,
+        carry_over_slots_to_new_session: true
+      }
+    };
+    const objeto3 = Object.assign(objeto2, config);
 
-    const resposta = safeDump(objeto2, {});
+    const resposta = safeDump(objeto3, {});
     const blob = new Blob([resposta], { type: 'text/plain;charset=utf-8' });
     saveAs(blob, 'domain.yml');
   }

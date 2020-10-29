@@ -23,6 +23,7 @@ import { AnswerUtter, Dialog, QuestionIntent } from '../dialog.service';
 import { DialogConverterService } from './dialog-converter.service';
 import { DialogGeneratorService } from './dialog-generator.service';
 import { FileGeneratorService } from './file-generator.service';
+import { RasaDialogGeneratorService } from './rasa-dialog-generator.service';
 
 
 // export interface Collaboration {
@@ -125,7 +126,7 @@ export const importDiagram = (bpmnJS) => <Object>(source: Observable<string>) =>
         // in the first diagram to display only
         subscription.unsubscribe();
 
-        bpmnJS.importXML(xml, function (err, warnings) {
+        bpmnJS.importXML(xml, function(err, warnings) {
 
           if (err) {
             observer.error(err);
@@ -173,12 +174,13 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
 
 
   constructor(private activatedRoute: ActivatedRoute,
-    private http: HttpClient,
-    private simulationService: SimulationGeneratorService,
-    private dialogConverterService: DialogConverterService,
-    private dialogGeneratorService: DialogGeneratorService,
-    private fileGeneratorService: FileGeneratorService,
-    private alertController: AlertController,
+              private http: HttpClient,
+              private simulationService: SimulationGeneratorService,
+              private dialogConverterService: DialogConverterService,
+              private dialogGeneratorService: DialogGeneratorService,
+              private fileGeneratorService: FileGeneratorService,
+              private alertController: AlertController,
+              private rasaDialogGeneratorService: RasaDialogGeneratorService,
   ) {
     this.bpmnJS = new Modeler({ additionalModules: [PalleteProviderModule as DJSModule] } as ViewerOptions);
 
@@ -241,19 +243,19 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
   }
   clickElem(elem) {
     // Thx user1601638 on Stack Overflow (6/6/2018 - https://stackoverflow.com/questions/13405129/javascript-create-and-save-file )
-    let eventMouse = document.createEvent('MouseEvents');
+    const eventMouse = document.createEvent('MouseEvents');
     eventMouse.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
     elem.dispatchEvent(eventMouse);
   }
   openFile(func) {
     const readFile = (e) => {
-      let file = e.target.files[0];
+      const file = e.target.files[0];
       if (!file) {
         return;
       }
-      let reader = new FileReader();
+      const reader = new FileReader();
       reader.onload = (e) => {
-        let contents = e.target.result;
+        const contents = e.target.result;
         ((fileInput as any).func as Function).apply(this, [contents]);
         document.body.removeChild(fileInput);
       };
@@ -294,30 +296,33 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
         const startEvent = process.flowElements.filter(e => e.$type === 'bpmn:StartEvent')[0] as StartEvent;
 
 
-        const elementsArray: Array<FlowNode[]> = this.simulationService.generate(startEvent);
-        // Para cada caminho devo então gerar os dialogos
+        let dialogos: Dialog[] = this.rasaDialogGeneratorService.generate(startEvent);
 
-        const array = Array.from(new Set(elementsArray.map((e) => JSON.stringify(e))) as any, (a, b) => JSON.parse(a as string));
-        const dialogos = array.map(caminho => {
-          const dialogo: Dialog = this.dialogConverterService.convert(caminho);
-          return dialogo;
-        });
+
+        // const elementsArray: Array<FlowNode[]> = this.simulationService.generate(startEvent);
+        // // Para cada caminho devo então gerar os dialogos
+
+        dialogos = Array.from(new Set(dialogos.map((e) => JSON.stringify(e))) as any, (a, b) => JSON.parse(a as string));
+        // const dialogos = array.map(caminho => {
+        //   const dialogo: Dialog = this.dialogConverterService.convert(caminho);
+        //   return dialogo;
+        // });
 
         console.log('simulacoes', dialogos);
 
-        // Remove o primeiro intent (desconsiderando o start)
-        // Remove o ultimo utter (desconsiderando o end)
-        const dialogosToGenerate = [] as Dialog[];
-        dialogos.forEach(dialogo => {
-          const items = [...dialogo.items];
-          items.shift();
-          items.pop();
-          const dialogoToPush = { id: dialogo.id, name: dialogo.name } as Dialog;
-          dialogoToPush.items = items;
-          dialogosToGenerate.push(dialogoToPush);
-        });
+        // // Remove o primeiro intent (desconsiderando o start)
+        // // Remove o ultimo utter (desconsiderando o end)
+        // const dialogosToGenerate = [] as Dialog[];
+        // dialogos.forEach(dialogo => {
+        //   const items = [...dialogo.items];
+        //   items.shift();
+        //   items.pop();
+        //   const dialogoToPush = { id: dialogo.id, name: dialogo.name } as Dialog;
+        //   dialogoToPush.items = items;
+        //   dialogosToGenerate.push(dialogoToPush);
+        // });
 
-        const files = this.dialogGeneratorService.generate(dialogosToGenerate);
+        const files = this.dialogGeneratorService.generate(dialogos);
         console.log('files', files);
 
 

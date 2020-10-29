@@ -45,7 +45,8 @@ export class SimulationGeneratorService {
     const caminhosParaRetornar = caminhos.filter(cam => {
       const ultimoElemento = cam[cam.length - 1];
       const caminhoPossuiElementoFinal = ultimoElemento.$type === 'bpmn:EndEvent';
-      return caminhoPossuiElementoFinal;
+      const caminhoPossuiGatewayComoElementoFinal = ultimoElemento.$type === 'bpmn:ExclusiveGateway';
+      return caminhoPossuiElementoFinal || caminhoPossuiGatewayComoElementoFinal;
     });
 
     return caminhosParaRetornar;
@@ -64,7 +65,7 @@ export class SimulationGeneratorService {
       // tslint:disable-next-line: prefer-for-of
       for (let index = 0; index < elementoAtual.outgoing.length; index++) {
         let proximoElemento: FlowElement = null;
-        if (elementoAtual.$type === 'bpmn:ExclusiveGateway') {
+        if (elementoAtual.$type === 'bpmn:ExclusiveGateway' || elementoAtual.$type === 'bpmn:StartEvent') {
           proximoElemento = elementoAtual.outgoing[index];
         } else {
           proximoElemento = elementoAtual.outgoing[index].targetRef;
