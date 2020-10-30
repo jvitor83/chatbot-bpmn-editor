@@ -37,7 +37,8 @@
               },
               {
                 "input": "src/global.scss"
-              }
+              },
+              "node_modules/bpmn-js-properties-panel/styles/properties.less"
             ],
             "scripts": []
           },

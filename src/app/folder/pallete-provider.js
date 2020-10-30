@@ -179,15 +179,15 @@ console.log('gettttttttt');
     //     click: createSubprocess
     //   }
     // },
-    // 'create.participant-expanded': {
-    //   group: 'collaboration',
-    //   className: 'bpmn-icon-participant',
-    //   title: translate('Create Pool/Participant'),
-    //   action: {
-    //     dragstart: createParticipant,
-    //     click: createParticipant
-    //   }
-    // },
+    'create.participant-expanded': {
+      group: 'collaboration',
+      className: 'bpmn-icon-participant',
+      title: translate('Create Pool/Participant'),
+      action: {
+        dragstart: createParticipant,
+        click: createParticipant
+      }
+    },
     // 'create.group': createAction(
     //   'bpmn:Group', 'artifact', 'bpmn-icon-group',
     //   translate('Create Group')

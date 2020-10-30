@@ -2,14 +2,19 @@ import { SimulationGeneratorService } from './simulation-generator.service';
 import { AfterContentInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import * as BpmnJS from 'bpmn-js/dist/bpmn-modeler.development.js';
+// import * as BpmnJS from 'bpmn-js/dist/bpmn-modeler.development.js';
 import { parse } from 'fast-xml-parser';
 // import { BPMNModdle, BPMNModdleConstructor, *asBpmnModdle } from 'bpmn-moddle';
 import BPMNModdle, { Definitions, ElementType, FlowNode, Process, StartEvent } from 'bpmn-moddle';
 import { saveAs } from 'file-saver';
 import { AlertController } from '@ionic/angular';
+import { propertiesPanelModule, propertiesProviderModule } from 'bpmn-js-properties-panel';
+import {CustomPropsProvider} from './props-provider/CustomPropsProvider';
+import {CustomPaletteProvider} from "./props-provider/CustomPaletteProvider";
+import * as magicModdleDescriptor from './props-provider/magic';
 
-
+// const propertiesPanelModule = require('bpmn-js-properties-panel');
+// const propertiesProviderModule = require('bpmn-js-properties-panel');
 
 
 
@@ -17,6 +22,7 @@ import { Observable } from 'rxjs';
 import PalleteProvider from './pallete-provider';
 import PalleteProviderModule from './pallete-provider-module';
 import Modeler from 'bpmn-js/lib/Modeler';
+import { InjectionNames, OriginalPropertiesProvider, PropertiesPanelModule } from './props-provider/bpmn-js';
 import { ViewerOptions } from 'diagram-js/lib/model';
 import { DJSModule } from 'diagram-js';
 import { AnswerUtter, Dialog, QuestionIntent } from '../dialog.service';
@@ -154,6 +160,18 @@ export const importDiagram = (bpmnJS) => <Object>(source: Observable<string>) =>
   templateUrl: './folder.page.html',
   styles: [
     `
+    
+      #js-properties-panel {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        width: 260px;
+        z-index: 10;
+        border-left: 1px solid #ccc;
+        overflow: auto;
+      }
+
       .diagram-container {
         height: 100%;
         width: 100%;
@@ -162,7 +180,7 @@ export const importDiagram = (bpmnJS) => <Object>(source: Observable<string>) =>
   ]
 })
 export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestroy {
-  private bpmnJS: Modeler;
+  private bpmnJS: any;
   @ViewChild('ref', { static: true }) private el: ElementRef;
 
 
@@ -182,13 +200,7 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
               private alertController: AlertController,
               private rasaDialogGeneratorService: RasaDialogGeneratorService,
   ) {
-    this.bpmnJS = new Modeler({ additionalModules: [PalleteProviderModule as DJSModule] } as ViewerOptions);
-
-    this.bpmnJS.on('import.done', ({ error }) => {
-      if (!error) {
-        this.bpmnJS.get('canvas').zoom('fit-viewport');
-      }
-    });
+    
   }
 
 
@@ -205,6 +217,31 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
 
 
   ngOnInit() {
+    this.bpmnJS = new Modeler({
+      container: '#js-canvas',
+      propertiesPanel: {
+        parent: '#js-properties-panel'
+      },
+      additionalModules: [
+
+        PropertiesPanelModule,
+        PalleteProviderModule as DJSModule,
+        {[InjectionNames.bpmnPropertiesProvider]: ['type', OriginalPropertiesProvider.propertiesProvider[1]]},
+        {[InjectionNames.propertiesProvider]: ['type', CustomPropsProvider]},
+      ],
+
+      // moddleExtensions: {
+      //   magic: magicModdleDescriptor
+      // }
+    } as ViewerOptions);
+
+    this.bpmnJS.on('import.done', ({ error }) => {
+      if (!error) {
+        this.bpmnJS.get('canvas').zoom('fit-viewport');
+      }
+    });
+
+
     this.new();
     // this.folder = this.activatedRoute.snapshot.paramMap.get('id');
     // this.loadUrl('https://cdn.staticaly.com/gh/bpmn-io/bpmn-js-examples/dfceecba/starter/diagram.bpmn');
