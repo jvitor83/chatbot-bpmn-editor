@@ -4,18 +4,27 @@
   </ion-toolbar>
 </ion-header> -->
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">ChatBot BPMN</ion-title>
-      
-    </ion-toolbar>
-  </ion-header>
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title size="large">ChatBot BPMN Editor</ion-title>
+    <ion-buttons slot="secondary">
+      <ion-button (click)="new()" size="large">New</ion-button>
+      <ion-button (click)="openFile(dispFile)" size="large">Open</ion-button>
+      <ion-button (click)="save()" size="large">Save</ion-button>
+      <ion-button (click)="presentPopover()" size="large">Generate RASA Files</ion-button>
+    </ion-buttons>
 
-  <ion-button (click)="new()" size="large">New</ion-button>
-  <ion-button (click)="openFile(dispFile)" size="large">Open</ion-button>
-  <ion-button (click)="save()" size="large">Save</ion-button>
-  <ion-button (click)="export()" size="large">Generate ChatBot Files (RASA)</ion-button>
+
+  </ion-toolbar>
+</ion-header>
+
+
+
+
+<ion-content>
+
+
   <div #ref id="js-canvas" class="diagram-container"></div>
+
   <div class="properties-panel-parent" id="js-properties-panel"></div>
 </ion-content>

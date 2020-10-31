@@ -60,12 +60,12 @@
 - Boa noite</bpmn:documentation>
       <bpmn:incoming>caminho_cumprimento</bpmn:incoming>
     </bpmn:userTask>
-    <bpmn:userTask id="possui_religiao" name="Possui alguma religião?">
+    <bpmn:userTask id="possui_religiao" name="Questiona se possui alguma religião?">
       <bpmn:documentation>- Possui alguma religião?
 - Tem alguma crença?</bpmn:documentation>
       <bpmn:incoming>caminho_religiao</bpmn:incoming>
     </bpmn:userTask>
-    <bpmn:userTask id="torce_time" name="Torce para algum time de futebol?">
+    <bpmn:userTask id="torce_time" name="Questiona se torce para algum time de futebol?">
       <bpmn:documentation>- Torce para algum time de futebol?
 - Torce para qual clube?</bpmn:documentation>
       <bpmn:incoming>caminho_futebol</bpmn:incoming>
@@ -93,7 +93,7 @@
     <bpmn:endEvent id="Event_0hfp2o4">
       <bpmn:incoming>Flow_0z5wp8r</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:serviceTask id="resposta_cumprimento" name="Responde cumprimento">
+    <bpmn:serviceTask id="resposta_cumprimento" name="Responde o cumprimento">
       <bpmn:documentation>- Olá, tudo bem?</bpmn:documentation>
       <bpmn:outgoing>Flow_0n9tdll</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -106,7 +106,7 @@
       <bpmn:documentation>- Sou um robô laico!</bpmn:documentation>
       <bpmn:outgoing>Flow_026rvci</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="resposta_torce_time" name="Não! Tem alguma sugestão?">
+    <bpmn:serviceTask id="resposta_torce_time" name="Responde que não. Mas pergunta se tem alguma sugestão!">
       <bpmn:documentation>- Não! Tem alguma sugestão?
 - Infelizmente não! Recomenda algum?</bpmn:documentation>
     </bpmn:serviceTask>

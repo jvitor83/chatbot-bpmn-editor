@@ -7,10 +7,10 @@ import { parse } from 'fast-xml-parser';
 // import { BPMNModdle, BPMNModdleConstructor, *asBpmnModdle } from 'bpmn-moddle';
 import BPMNModdle, { Definitions, ElementType, FlowNode, Process, StartEvent } from 'bpmn-moddle';
 import { saveAs } from 'file-saver';
-import { AlertController } from '@ionic/angular';
+import { AlertController, PopoverController } from '@ionic/angular';
 import { propertiesPanelModule, propertiesProviderModule } from 'bpmn-js-properties-panel';
-import {CustomPropsProvider} from './props-provider/CustomPropsProvider';
-import {CustomPaletteProvider} from "./props-provider/CustomPaletteProvider";
+import { CustomPropsProvider } from './props-provider/CustomPropsProvider';
+import { CustomPaletteProvider } from "./props-provider/CustomPaletteProvider";
 import * as magicModdleDescriptor from './props-provider/magic';
 
 // const propertiesPanelModule = require('bpmn-js-properties-panel');
@@ -30,6 +30,7 @@ import { DialogConverterService } from './dialog-converter.service';
 import { DialogGeneratorService } from './dialog-generator.service';
 import { FileGeneratorService } from './file-generator.service';
 import { RasaDialogGeneratorService } from './rasa-dialog-generator.service';
+import { PopoverComponent } from './popover/popover.component';
 
 
 // export interface Collaboration {
@@ -132,7 +133,7 @@ export const importDiagram = (bpmnJS) => <Object>(source: Observable<string>) =>
         // in the first diagram to display only
         subscription.unsubscribe();
 
-        bpmnJS.importXML(xml, function(err, warnings) {
+        bpmnJS.importXML(xml, function (err, warnings) {
 
           if (err) {
             observer.error(err);
@@ -160,8 +161,21 @@ export const importDiagram = (bpmnJS) => <Object>(source: Observable<string>) =>
   templateUrl: './folder.page.html',
   styles: [
     `
-    
+      /* Set the width to the full container and center the content */
+      ion-select {
+        width: 400px;
+
+        justify-content: center;
+      }
+
+      /* Set the flex in order to size the text width to its content */
+      ion-select::part(placeholder),
+      ion-select::part(text) {
+        flex: 0 0 auto;
+      }
+
       #js-properties-panel {
+        background-color: #f8f8f8;
         position: absolute;
         top: 0;
         bottom: 0;
@@ -176,6 +190,8 @@ export const importDiagram = (bpmnJS) => <Object>(source: Observable<string>) =>
         height: 100%;
         width: 100%;
       }
+
+
     `
   ]
 })
@@ -192,15 +208,16 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
 
 
   constructor(private activatedRoute: ActivatedRoute,
-              private http: HttpClient,
-              private simulationService: SimulationGeneratorService,
-              private dialogConverterService: DialogConverterService,
-              private dialogGeneratorService: DialogGeneratorService,
-              private fileGeneratorService: FileGeneratorService,
-              private alertController: AlertController,
-              private rasaDialogGeneratorService: RasaDialogGeneratorService,
+    private http: HttpClient,
+    private simulationService: SimulationGeneratorService,
+    private dialogConverterService: DialogConverterService,
+    private dialogGeneratorService: DialogGeneratorService,
+    private fileGeneratorService: FileGeneratorService,
+    private alertController: AlertController,
+    private rasaDialogGeneratorService: RasaDialogGeneratorService,
+    private popoverController: PopoverController,
   ) {
-    
+
   }
 
 
@@ -215,6 +232,26 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
     alert.then(e => e.present());
   }
 
+  async presentPopover(ev: any) {
+    const popover = await this.popoverController.create({
+      component: PopoverComponent,
+      cssClass: 'my-custom-class',
+      event: ev,
+      translucent: true,
+
+    });
+
+    popover.onDidDismiss().then((result) => {
+      if (result && result.data && result.data.estrategia) {
+        this.estrategia = result.data.estrategia;
+        console.log(this.estrategia);
+        this.export();
+      }
+    });
+
+
+    return await popover.present();
+  }
 
   ngOnInit() {
     this.bpmnJS = new Modeler({
@@ -226,8 +263,8 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
 
         PropertiesPanelModule,
         PalleteProviderModule as DJSModule,
-        {[InjectionNames.bpmnPropertiesProvider]: ['type', OriginalPropertiesProvider.propertiesProvider[1]]},
-        {[InjectionNames.propertiesProvider]: ['type', CustomPropsProvider]},
+        { [InjectionNames.bpmnPropertiesProvider]: ['type', OriginalPropertiesProvider.propertiesProvider[1]] },
+        { [InjectionNames.propertiesProvider]: ['type', CustomPropsProvider] },
       ],
 
       // moddleExtensions: {
@@ -316,6 +353,8 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
     });
   }
 
+  estrategia: 'um-caminho-por-intencao' | 'caminho-completo-dividido-por-decisao' | 'caminho-completo-sem-divisao' = 'caminho-completo-sem-divisao';
+
   async export() {
 
     this.bpmnJS.saveXML({ format: true, preamble: true }, (err, resultXmlString) => {
@@ -332,7 +371,8 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
         const process = val.rootElement.rootElements.filter(e => e.$type === 'bpmn:Process')[0] as Process;
         const startEvent = process.flowElements.filter(e => e.$type === 'bpmn:StartEvent')[0] as StartEvent;
 
-
+        console.log(this.estrategia);
+        this.rasaDialogGeneratorService.estrategia = this.estrategia;
         let dialogos: Dialog[] = this.rasaDialogGeneratorService.generate(startEvent);
 
 

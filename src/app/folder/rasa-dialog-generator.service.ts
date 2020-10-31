@@ -7,6 +7,9 @@ import { AnswerUtter, Dialog, QuestionIntent } from '../dialog.service';
 })
 export class RasaDialogGeneratorService {
 
+
+  estrategia: 'um-caminho-por-intencao' | 'caminho-completo-dividido-por-decisao' | 'caminho-completo-sem-divisao' = 'caminho-completo-sem-divisao';
+
   constructor() { }
 
   generate(startEvent: StartEvent): Dialog[] {
@@ -15,6 +18,13 @@ export class RasaDialogGeneratorService {
     this.recursiveCompletePath(startEvent, null, dialogs);
 
     return dialogs;
+  }
+
+  private arrayRemove(array: Array<unknown>, objeto: unknown) {
+    const index = array.indexOf(objeto);
+    if (index > -1) {
+      array.splice(index, 1);
+    }
   }
 
   recursiveCompletePath(elementoAtual: FlowElement, dialogo: Dialog, dialogos: Dialog[]) {
@@ -52,10 +62,26 @@ export class RasaDialogGeneratorService {
       for (let index = 0; index < elementosDestino.length; index++) {
         // Devo chamar a recursao para que adicione o sequence/seta como intent
         const sequence = elementosDestino[index];
-        dialogo = { id: sequence.id, name: sequence.id, items: [] } as Dialog;
-        dialogos.push(dialogo);
-        const proximoSequenceElement = sequence.targetRef;
-        this.recursiveCompletePath(proximoSequenceElement, dialogo, dialogos);
+        // Se a estrategia for de criar um caminho
+        if (this.estrategia === 'caminho-completo-dividido-por-decisao' || this.estrategia === 'caminho-completo-sem-divisao') {
+          // Devo clonar o caminho atual
+          const caminhoClonado = JSON.parse(JSON.stringify(dialogo)) as Dialog;
+          // adicionar na lista dos caminhos
+          dialogos.push(caminhoClonado);
+          // passar para a recursao continuar montando o caminho
+          const proximoSequenceElement = sequence.targetRef;
+          caminhoClonado.id = proximoSequenceElement.id;
+          caminhoClonado.name = proximoSequenceElement.id;
+          if (this.estrategia === 'caminho-completo-sem-divisao') {
+            this.arrayRemove(dialogos, dialogo);
+          }
+          this.recursiveCompletePath(proximoSequenceElement, caminhoClonado, dialogos);
+        } else if (this.estrategia === 'um-caminho-por-intencao') {
+          dialogo = { id: sequence.id, name: sequence.id, items: [] } as Dialog;
+          dialogos.push(dialogo);
+          const proximoSequenceElement = sequence.targetRef;
+          this.recursiveCompletePath(proximoSequenceElement, dialogo, dialogos);
+        }
       }
     } else {
       const proximoElemento = this.getNextElement(elementoAtual) as FlowNode;

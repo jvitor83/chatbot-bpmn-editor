@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { FolderPageRoutingModule } from './folder-routing.module';
 
 import { FolderPage } from './folder.page';
+import { PopoverComponent } from './popover/popover.component';
 
 @NgModule({
   imports: [
@@ -17,6 +18,6 @@ import { FolderPage } from './folder.page';
     FolderPageRoutingModule,
     HttpClientModule,
   ],
-  declarations: [FolderPage]
+  declarations: [FolderPage, PopoverComponent]
 })
 export class FolderPageModule {}

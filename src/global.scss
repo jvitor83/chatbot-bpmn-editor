@@ -27,3 +27,11 @@
 
 @import "~bpmn-js/dist/assets/diagram-js.css";
 @import "~bpmn-js/dist/assets/bpmn-font/css/bpmn.css";
+
+
+.my-custom-class {
+    --width: 450px;
+    --min-width: 450px;
+    --height: 300px;
+    --min-height: 300px;
+  }

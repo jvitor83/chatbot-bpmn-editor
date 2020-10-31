@@ -1,0 +1,40 @@
+<!-- <ion-item>
+    <ion-label>Estrategia de Geração:</ion-label>
+    <ion-select [interface]="'popover'" [value]="'caminho-completo-sem-divisao'" placeholder="Select One">
+        <ion-select-option value="caminho-completo-sem-divisao">Caminho completo sem divisao</ion-select-option>
+        <ion-select-option value="caminho-completo-dividido-por-decisao">Caminho completo dividido por decisao
+        </ion-select-option>
+        <ion-select-option value="um-caminho-por-intencao">Um caminho por intencao</ion-select-option>
+    </ion-select>
+</ion-item> -->
+
+
+<ion-list>
+    
+    <ion-radio-group #rel [(ngModel)]="estrategia" (ionChange)="checkValue($event)">
+        <ion-list-header>
+            <ion-label>Choose a generation strategy for the stories:</ion-label>
+        </ion-list-header>
+
+        <ion-item>
+            <ion-label>Complete path (splitted by decision gateway)</ion-label>
+            <ion-radio slot="start" value="caminho-completo-dividido-por-decisao"></ion-radio>
+        </ion-item>
+
+        <ion-item>
+            <ion-label>Complete path (without split)</ion-label>
+            <ion-radio slot="start" value="caminho-completo-sem-divisao"></ion-radio>
+        </ion-item>
+
+        <ion-item>
+            <ion-label>One path per intent</ion-label>
+            <ion-radio slot="start" value="um-caminho-por-intencao"></ion-radio>
+        </ion-item>
+    </ion-radio-group>
+</ion-list>
+
+<ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button [disabled]="this.estrategia == null" (click)="dismiss($event)">
+      <ion-icon name="download-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
