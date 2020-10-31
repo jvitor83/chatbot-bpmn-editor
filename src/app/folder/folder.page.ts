@@ -415,7 +415,7 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
 
       })
       ).catch(e => {
-        this.presentAlert(JSON.stringify(e));
+        this.presentAlert(`All 'user task' and 'service task' should have 'element documentation'! Check the wiki for more details.`);
       });
 
 
