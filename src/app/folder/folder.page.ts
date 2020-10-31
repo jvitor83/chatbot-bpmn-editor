@@ -350,12 +350,38 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
     this.clickElem(fileInput);
   }
 
+  async saveAs(content: string) {
+    if ((window as any).showSaveFilePicker) {
+
+
+      const options = {
+        types: [
+          {
+            description: 'XML File',
+            accept: {
+              'application/xml': ['.xml'],
+            },
+          },
+        ],
+      };
+      const handle = await (window as any).showSaveFilePicker(options);
+      const writable = await handle.createWritable();
+      // Write the contents of the file to the stream.
+      await writable.write(content);
+      // Close the file and write the contents to disk.
+      await writable.close();
+    } else {
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      saveAs(blob, `bpmn-chatbot-${new Date().toISOString().split(':').join('').split('-').join('').split('.').join('').split('Z').join('')}.xml`);
+    }
+
+  }
+
 
   save() {
     this.bpmnJS.saveXML({ format: true, preamble: true }, (err, resultXmlString) => {
       const xml = resultXmlString as any as string;
-      const blob = new Blob([xml], { type: 'text/plain;charset=utf-8' });
-      saveAs(blob, `bpmn-chatbot-${new Date().toISOString().split(':').join('').split('-').join('').split('.').join('').split('Z').join('')}.xml`);
+      this.saveAs(resultXmlString);
     });
   }
 
@@ -409,13 +435,12 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
         console.log('files', files);
 
 
-        this.fileGeneratorService.generateIntents(files.intents);
-        this.fileGeneratorService.generateUtters(files.utters, files.intents);
-        this.fileGeneratorService.generateStories(files.stories);
+        this.fileGeneratorService.generate(files);
+
 
       })
       ).catch(e => {
-        this.presentAlert(`All 'user task' and 'service task' should have 'element documentation'! Check the wiki for more details.`);
+        this.presentAlert(`All 'user task' and 'service task' should have 'element documentation'! Check the wiki for more details. Details: ${JSON.stringify(e)}`);
       });
 
 

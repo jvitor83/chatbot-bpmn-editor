@@ -1,14 +1,41 @@
 import { Injectable } from '@angular/core';
-import { Story, Utter, Intent } from './dialog-generator.service';
+import { Story, Utter, Intent, DialogFiles } from './dialog-generator.service';
 import { safeDump } from 'js-yaml';
 import * as json2md from 'json2md';
 import { saveAs } from 'file-saver';
+import JSZip from 'jszip';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class FileGeneratorService {
+  private content: string = null;
+  generate(files: DialogFiles) {
+
+
+    const intentsString = this.generateIntents(files.intents);
+    const uttersString = this.generateUtters(files.utters, files.intents);
+    const storiesString = this.generateStories(files.stories);
+
+    const zipFile: JSZip = new JSZip();
+    const zip = zipFile
+      .file('data/nlu.md', intentsString)
+      .file('domain.yml', uttersString)
+      .file('data/stories.md', storiesString);
+
+    let promise: Promise<string | Uint8Array> = null;
+    if (zip.support.uint8array) {
+      promise = zip.generateAsync({ type: "uint8array" });
+    } else {
+      promise = zip.generateAsync({ type: "string" });
+    }
+    promise.then(content => {
+      this.saveAs(content);
+    });
+
+    // this.saveAs(this.content);
+  }
   generateStories(stories: Story[]) {
 
     const stringMd = stories.map(storie => {
@@ -69,9 +96,9 @@ export class FileGeneratorService {
     }
 
     const resposta = json2md(stringMd);
-    const blob = new Blob([resposta], { type: 'text/plain;charset=utf-8' });
-    saveAs(blob, 'stories.md');
-
+    // const blob = new Blob([resposta], { type: 'text/plain;charset=utf-8' });
+    // saveAs(blob, 'stories.md');
+    return resposta;
   }
 
   generateIntents(intents: Intent[]) {
@@ -82,8 +109,9 @@ export class FileGeneratorService {
       ];
     });
     const resposta = json2md(stringMd);
-    const blob = new Blob([resposta], { type: 'text/plain;charset=utf-8' });
-    saveAs(blob, 'nlu.md');
+    // const blob = new Blob([resposta], { type: 'text/plain;charset=utf-8' });
+    // saveAs(blob, 'nlu.md');
+    return resposta;
   }
 
   generateUtters(utters: Utter[], intents: Intent[]) {
@@ -106,8 +134,35 @@ export class FileGeneratorService {
     const objeto3 = Object.assign(objeto2, config);
 
     const resposta = safeDump(objeto3, {});
-    const blob = new Blob([resposta], { type: 'text/plain;charset=utf-8' });
-    saveAs(blob, 'domain.yml');
+    // const blob = new Blob([resposta], { type: 'text/plain;charset=utf-8' });
+    // saveAs(blob, 'domain.yml');
+    return resposta;
+  }
+
+  async saveAs(content: string | Uint8Array) {
+    if ((window as any).showSaveFilePicker) {
+      const options = {
+        types: [
+          {
+            description: 'ZIP File',
+            accept: {
+              'application/zip': ['.zip'],
+            },
+          },
+        ],
+      };
+      const handle = await (window as any).showSaveFilePicker(options);
+      const writable = await handle.createWritable();
+      // Write the contents of the file to the stream.
+      await writable.write(content);
+      // Close the file and write the contents to disk.
+      await writable.close();
+
+    } else {
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      saveAs(blob, `bpmn-chatbot-${new Date().toISOString().split(':').join('').split('-').join('').split('.').join('').split('Z').join('')}.zip`);
+
+    }
   }
 
   constructor() { }
