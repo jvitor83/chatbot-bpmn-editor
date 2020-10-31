@@ -7,7 +7,7 @@ import { parse } from 'fast-xml-parser';
 // import { BPMNModdle, BPMNModdleConstructor, *asBpmnModdle } from 'bpmn-moddle';
 import BPMNModdle, { Definitions, ElementType, FlowNode, Process, StartEvent } from 'bpmn-moddle';
 import { saveAs } from 'file-saver';
-import { AlertController, PopoverController } from '@ionic/angular';
+import { AlertController, PopoverController, ToastController } from '@ionic/angular';
 import { propertiesPanelModule, propertiesProviderModule } from 'bpmn-js-properties-panel';
 import { CustomPropsProvider } from './props-provider/CustomPropsProvider';
 import { CustomPaletteProvider } from "./props-provider/CustomPaletteProvider";
@@ -214,14 +214,15 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
   hide = false;
 
   constructor(private activatedRoute: ActivatedRoute,
-    private http: HttpClient,
-    private simulationService: SimulationGeneratorService,
-    private dialogConverterService: DialogConverterService,
-    private dialogGeneratorService: DialogGeneratorService,
-    private fileGeneratorService: FileGeneratorService,
-    private alertController: AlertController,
-    private rasaDialogGeneratorService: RasaDialogGeneratorService,
-    private popoverController: PopoverController,
+              private http: HttpClient,
+              private simulationService: SimulationGeneratorService,
+              private dialogConverterService: DialogConverterService,
+              private dialogGeneratorService: DialogGeneratorService,
+              private fileGeneratorService: FileGeneratorService,
+              private alertController: AlertController,
+              private rasaDialogGeneratorService: RasaDialogGeneratorService,
+              private popoverController: PopoverController,
+              private toastController: ToastController,
   ) {
 
   }
@@ -398,6 +399,8 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
         this.presentAlert('No file or result content!');
       }
       const promiseFromXML = (moddle as any).fromXML(imagem) as any as Promise<{ rootElement: Definitions }>;
+
+
       promiseFromXML.then((val => {
         console.log('definitions', val);
         const process = val.rootElement.rootElements.filter(e => e.$type === 'bpmn:Process')[0] as Process;
@@ -435,12 +438,33 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
         console.log('files', files);
 
 
-        this.fileGeneratorService.generate(files);
+        this.fileGeneratorService.generate(files).then(() => {
+          const toast = this.toastController.create({
+            message: 'File has been saved successfully.',
+            duration: 3500,
+            color: 'success'
+          });
+          toast.then(e => e.present());
+        });
+
+        
+
+
+        
+          
+        // const alert = this.alertController.create({
+        //   cssClass: 'my-custom-class',
+        //   header: 'Success',
+        //   message: 'File saved!',
+        //   buttons: ['OK']
+        // });
+    
+        // alert.then(e => e.present());
 
 
       })
       ).catch(e => {
-        this.presentAlert(`All 'user task' and 'service task' should have 'element documentation'! Check the wiki for more details. Details: ${JSON.stringify(e)}`);
+        this.presentAlert(`All 'user task' and 'service task' should have 'element documentation'! Check the wiki for more details. Details: ${e} | ${JSON.stringify(e)}`);
       });
 
 

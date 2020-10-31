@@ -11,27 +11,27 @@ import JSZip from 'jszip';
 })
 export class FileGeneratorService {
   private content: string = null;
-  generate(files: DialogFiles) {
+  async generate(files: DialogFiles): Promise<void> {
 
 
     const intentsString = this.generateIntents(files.intents);
     const uttersString = this.generateUtters(files.utters, files.intents);
     const storiesString = this.generateStories(files.stories);
 
-    const zipFile: JSZip = new JSZip();
-    const zip = zipFile
+    let zipFile: JSZip = new JSZip();
+    zipFile = zipFile
       .file('data/nlu.md', intentsString)
       .file('domain.yml', uttersString)
       .file('data/stories.md', storiesString);
 
     let promise: Promise<string | Uint8Array> = null;
-    if (zip.support.uint8array) {
-      promise = zip.generateAsync({ type: "uint8array" });
+    if (JSZip.support.uint8array) {
+      promise = zipFile.generateAsync({ type: "uint8array" });
     } else {
-      promise = zip.generateAsync({ type: "string" });
+      promise = zipFile.generateAsync({ type: "string" });
     }
-    promise.then(content => {
-      this.saveAs(content);
+    return promise.then(content => {
+      return this.saveAs(content);
     });
 
     // this.saveAs(this.content);
