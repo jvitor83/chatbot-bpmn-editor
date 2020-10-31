@@ -191,7 +191,12 @@ export const importDiagram = (bpmnJS) => <Object>(source: Observable<string>) =>
         width: 100%;
       }
 
-
+      .hide-button {
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 999;
+      }
     `
   ]
 })
@@ -206,6 +211,7 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
 
   @Input() private url: string;
 
+  hide = false;
 
   constructor(private activatedRoute: ActivatedRoute,
     private http: HttpClient,

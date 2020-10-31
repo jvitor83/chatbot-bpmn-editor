@@ -26,5 +26,11 @@
 
   <div #ref id="js-canvas" class="diagram-container"></div>
 
-  <div class="properties-panel-parent" id="js-properties-panel"></div>
+  <ion-button fill="clear" color="tertiary" size="lerge" class="hide-button" (click)="this.hide = !this.hide">
+    <ion-icon *ngIf="this.hide == false" name="close-circle-outline"></ion-icon>
+    <ion-icon *ngIf="this.hide == true" name="arrow-back-circle-outline"></ion-icon>
+  </ion-button>
+  <div [hidden]="hide" class="properties-panel-parent" id="js-properties-panel">
+  </div>
+
 </ion-content>
