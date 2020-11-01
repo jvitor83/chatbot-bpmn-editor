@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1604168406946,
+  "timestamp": 1604210088475,
   "index": "/chatbot-bpmn-editor/index.html",
   "assetGroups": [
     {
@@ -11,8 +11,8 @@
         "ignoreVary": true
       },
       "urls": [
-        "/chatbot-bpmn-editor/10-es2015.6ddc22e73de233350f1a.js",
-        "/chatbot-bpmn-editor/10-es5.6ddc22e73de233350f1a.js",
+        "/chatbot-bpmn-editor/10-es2015.d0df25b7913f23b93f6b.js",
+        "/chatbot-bpmn-editor/10-es5.d0df25b7913f23b93f6b.js",
         "/chatbot-bpmn-editor/11-es2015.54de496204b3db4ffb3c.js",
         "/chatbot-bpmn-editor/11-es5.54de496204b3db4ffb3c.js",
         "/chatbot-bpmn-editor/12-es2015.5be5f7e8e2ea60bac28e.js",
@@ -129,8 +129,8 @@
         "/chatbot-bpmn-editor/polyfills-dom-es5.24551ae9e0bc5335f9b7.js",
         "/chatbot-bpmn-editor/polyfills-es2015.91389ecfa80f1063947d.js",
         "/chatbot-bpmn-editor/polyfills-es5.7f04130fb748fb469cc3.js",
-        "/chatbot-bpmn-editor/runtime-es2015.3df7fe678ca161abf534.js",
-        "/chatbot-bpmn-editor/runtime-es5.3df7fe678ca161abf534.js",
+        "/chatbot-bpmn-editor/runtime-es2015.e748a12f12c1cefe556a.js",
+        "/chatbot-bpmn-editor/runtime-es5.e748a12f12c1cefe556a.js",
         "/chatbot-bpmn-editor/styles.b56bfb1e59d0c5c7dbd6.css"
       ],
       "patterns": []
@@ -164,8 +164,8 @@
   ],
   "dataGroups": [],
   "hashTable": {
-    "/chatbot-bpmn-editor/10-es2015.6ddc22e73de233350f1a.js": "c01054f6524b9907a45fd4aec8fb3a17ea11bb8e",
-    "/chatbot-bpmn-editor/10-es5.6ddc22e73de233350f1a.js": "72abd699d3d8fc5e3d46528a954293fa39917508",
+    "/chatbot-bpmn-editor/10-es2015.d0df25b7913f23b93f6b.js": "5da2f67c3fc9f70901336a47203fb44c68d7f6e2",
+    "/chatbot-bpmn-editor/10-es5.d0df25b7913f23b93f6b.js": "055112f8cb99ae6995629164b8bc9b8532d0d73d",
     "/chatbot-bpmn-editor/11-es2015.54de496204b3db4ffb3c.js": "287d9f63373b8176389cda79dc944a757b6efbb5",
     "/chatbot-bpmn-editor/11-es5.54de496204b3db4ffb3c.js": "d93b9dee480c34af191053c27feb27125f05959f",
     "/chatbot-bpmn-editor/12-es2015.5be5f7e8e2ea60bac28e.js": "7f73a4035352489a01cf02700b203ece739ff15a",
@@ -285,7 +285,7 @@
     "/chatbot-bpmn-editor/bpmn.cfe117edcfdead8ecb8f.svg": "871b560d1b910010a171c0bca15900c4f3f23e8a",
     "/chatbot-bpmn-editor/common-es2015.5ba1bd739b37c0d5b62a.js": "5a08ccc29ab2883312a1ea3bbb8f9f4fdbda958f",
     "/chatbot-bpmn-editor/common-es5.5ba1bd739b37c0d5b62a.js": "f0fedf36adae5bcd1f1b83329baf976ad472c04b",
-    "/chatbot-bpmn-editor/index.html": "76bcd0c848482db71e8acfba216119fc2125b9d8",
+    "/chatbot-bpmn-editor/index.html": "7dd44fbbc9cf75421005496b80b9d32ca5ce7a1d",
     "/chatbot-bpmn-editor/main-es2015.a6518ee24121f249985f.js": "8ccfce2f819fa997983ca9f5e97c185dc0625fd6",
     "/chatbot-bpmn-editor/main-es5.a6518ee24121f249985f.js": "bc79dfe0d40a9c1a0ab09a6ba6d045c06a2e6966",
     "/chatbot-bpmn-editor/manifest.webmanifest": "a755fc4df838647f1ecc6de661cf918daa7a67e4",
@@ -297,8 +297,8 @@
     "/chatbot-bpmn-editor/polyfills-dom-es5.24551ae9e0bc5335f9b7.js": "50e795de8617f137b6640a5f3b7c432dd75900f1",
     "/chatbot-bpmn-editor/polyfills-es2015.91389ecfa80f1063947d.js": "8ea3172d9dfcf79a7dea59945f5c6db8864d21f6",
     "/chatbot-bpmn-editor/polyfills-es5.7f04130fb748fb469cc3.js": "a25578164cd3191cc5b39071e25f6be9f62477eb",
-    "/chatbot-bpmn-editor/runtime-es2015.3df7fe678ca161abf534.js": "a84b79b4965d202941cb00a62a424abb162e6ed8",
-    "/chatbot-bpmn-editor/runtime-es5.3df7fe678ca161abf534.js": "9e2a3104ed2fa774a90df5a5ec69f4992c07c730",
+    "/chatbot-bpmn-editor/runtime-es2015.e748a12f12c1cefe556a.js": "47a2b026b092138f58f5e1bf8e4ef61dc07994a3",
+    "/chatbot-bpmn-editor/runtime-es5.e748a12f12c1cefe556a.js": "c4c1076f6f1018d89488009940f1e798e273ca73",
     "/chatbot-bpmn-editor/styles.b56bfb1e59d0c5c7dbd6.css": "4050c756c8d5d2dbe98b11331cbdc5f2dc94e194"
   },
   "navigationUrls": [
