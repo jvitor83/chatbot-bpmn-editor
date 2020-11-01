@@ -420,6 +420,9 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
         //   return dialogo;
         // });
 
+        // Somente os que possuem itens
+        dialogos = dialogos.filter(f => f.items.length > 0);
+
         console.log('simulacoes', dialogos);
 
         // // Remove o primeiro intent (desconsiderando o start)
