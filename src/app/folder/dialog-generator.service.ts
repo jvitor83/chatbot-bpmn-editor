@@ -79,7 +79,9 @@ export class DialogGeneratorService {
     const intentsWithUtters = [] as IntentWithUtters[];
     let intentWithUtters = null as IntentWithUtters;
     caminho.forEach((dialogItem, index) => {
-      const descriptionSplitted = dialogItem.description.replace('- ', '').replace(/[\n\r]/g, '|').split('|- ').join('|').split('|');
+      // const descriptionSplitted = dialogItem.description.replace('- ', '').replace(/[\n\r]/g, '|').split('|- ').join('|').split('|');
+      const descriptionSplittedWithEmpty = dialogItem.description.split('- ').join('|').split('|');
+      const descriptionSplitted = descriptionSplittedWithEmpty.filter(e => e !== '');
       if (dialogItem.type === 'QuestionIntent') {
         const novoIntentWithUtters = { intent: { name: dialogItem.id, items: descriptionSplitted }, utters: [] };
         intentWithUtters = novoIntentWithUtters;
