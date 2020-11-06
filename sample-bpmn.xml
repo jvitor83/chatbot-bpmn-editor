@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
   <bpmn:collaboration id="bot">
+    <bpmn:documentation>Não entendi!</bpmn:documentation>
     <bpmn:participant id="usuario" name="Usuário" processRef="Process_1" />
     <bpmn:participant id="robo" name="Robô" processRef="Process_0cxc7ft" />
     <bpmn:messageFlow id="Flow_1l9nvfc" sourceRef="resposta_posso_ajudar" targetRef="decide_pergunta" />
@@ -53,33 +54,43 @@
       <bpmn:outgoing>Flow_0nj19za</bpmn:outgoing>
     </bpmn:task>
     <bpmn:userTask id="cumprimento" name="Cumprimenta">
-      <bpmn:documentation>- Olá
-- Oi
-- Bom dia
-- Boa tarde
-- Boa noite</bpmn:documentation>
+      <bpmn:documentation>Olá
+---
+Oi
+---
+Bom dia
+---
+Boa tarde
+---
+Boa noite</bpmn:documentation>
       <bpmn:incoming>caminho_cumprimento</bpmn:incoming>
     </bpmn:userTask>
     <bpmn:userTask id="possui_religiao" name="Questiona se possui alguma religião?">
-      <bpmn:documentation>- Possui alguma religião?
-- Tem alguma crença?</bpmn:documentation>
+      <bpmn:documentation>Possui alguma religião?
+---
+Tem alguma crença?</bpmn:documentation>
       <bpmn:incoming>caminho_religiao</bpmn:incoming>
     </bpmn:userTask>
     <bpmn:userTask id="torce_time" name="Questiona se torce para algum time de futebol?">
-      <bpmn:documentation>- Torce para algum time de futebol?
-- Torce para qual clube?</bpmn:documentation>
+      <bpmn:documentation>Torce para algum time de futebol?
+---
+Torce para qual clube?</bpmn:documentation>
       <bpmn:incoming>caminho_futebol</bpmn:incoming>
     </bpmn:userTask>
     <bpmn:userTask id="sugere_time" name="Sugere time">
-      <bpmn:documentation>- Palmeiras
-- Flamengo
-- Corintians</bpmn:documentation>
+      <bpmn:documentation>Palmeiras
+---
+Flamengo
+---
+Corintians</bpmn:documentation>
       <bpmn:incoming>caminho_informa_time</bpmn:incoming>
     </bpmn:userTask>
     <bpmn:userTask id="nao_sugere_time" name="Informa não ter sugestão!">
-      <bpmn:documentation>- Nenhuma sugestão!
-- Sem idéia!
-- Não</bpmn:documentation>
+      <bpmn:documentation>Nenhuma sugestão!
+---
+Sem idéia!
+---
+Não</bpmn:documentation>
       <bpmn:incoming>caminho_nao_informa_time</bpmn:incoming>
     </bpmn:userTask>
   </bpmn:process>
@@ -94,28 +105,30 @@
       <bpmn:incoming>Flow_0z5wp8r</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:serviceTask id="resposta_cumprimento" name="Responde o cumprimento">
-      <bpmn:documentation>- Olá, tudo bem?</bpmn:documentation>
+      <bpmn:documentation>Olá, tudo bem?</bpmn:documentation>
       <bpmn:outgoing>Flow_0n9tdll</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="resposta_posso_ajudar" name="Questiona em que pode ajudar">
-      <bpmn:documentation>- Posso ajudar?
-- Gostaria de perguntar algo?</bpmn:documentation>
+      <bpmn:documentation>Posso ajudar?
+---
+Gostaria de perguntar algo?</bpmn:documentation>
       <bpmn:incoming>Flow_0n9tdll</bpmn:incoming>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="resposta_possui_religiao" name="Responde que não tem preferência">
-      <bpmn:documentation>- Sou um robô laico!</bpmn:documentation>
+      <bpmn:documentation>Sou um robô laico!</bpmn:documentation>
       <bpmn:outgoing>Flow_026rvci</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="resposta_torce_time" name="Responde que não. Mas pergunta se tem alguma sugestão!">
-      <bpmn:documentation>- Não! Tem alguma sugestão?
-- Infelizmente não! Recomenda algum?</bpmn:documentation>
+      <bpmn:documentation>Não! Tem alguma sugestão?
+---
+Infelizmente não! Recomenda algum?</bpmn:documentation>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="resposta_time" name="Responde que irá torcer, mas possui dúvidas!">
-      <bpmn:documentation>- Não tenho certeza se é um bom time, mas darei uma chance!</bpmn:documentation>
+      <bpmn:documentation>Não tenho certeza se é um bom time, mas darei uma chance!</bpmn:documentation>
       <bpmn:outgoing>Flow_0z5wp8r</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="responde_nao_sugere_time" name="Responde que sente muito!">
-      <bpmn:documentation>- Que pena! Já estava pensando em comprar uma camiseta!</bpmn:documentation>
+      <bpmn:documentation>Que pena! Já estava pensando em comprar uma camiseta!</bpmn:documentation>
       <bpmn:outgoing>Flow_0d0ht9u</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0z5wp8r" sourceRef="resposta_time" targetRef="Event_0hfp2o4" />
