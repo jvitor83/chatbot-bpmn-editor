@@ -4,8 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 // import * as BpmnJS from 'bpmn-js/dist/bpmn-modeler.development.js';
 import { parse } from 'fast-xml-parser';
-// import { BPMNModdle, BPMNModdleConstructor, *asBpmnModdle } from 'bpmn-moddle';
-import BPMNModdle, { Definitions, ElementType, FlowNode, Process, StartEvent } from 'bpmn-moddle';
+// import { BPMNModdle, BPMNModdleConstructor, *asBpmnModdle, Collaboration } from 'bpmn-moddle';
+import BPMNModdle, { Collaboration, Definitions, ElementType, FlowNode, Process, StartEvent } from 'bpmn-moddle';
 import { saveAs } from 'file-saver';
 import { AlertController, PopoverController, ToastController } from '@ionic/angular';
 import { propertiesPanelModule, propertiesProviderModule } from 'bpmn-js-properties-panel';
@@ -214,15 +214,15 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
   hide = false;
 
   constructor(private activatedRoute: ActivatedRoute,
-              private http: HttpClient,
-              private simulationService: SimulationGeneratorService,
-              private dialogConverterService: DialogConverterService,
-              private dialogGeneratorService: DialogGeneratorService,
-              private fileGeneratorService: FileGeneratorService,
-              private alertController: AlertController,
-              private rasaDialogGeneratorService: RasaDialogGeneratorService,
-              private popoverController: PopoverController,
-              private toastController: ToastController,
+    private http: HttpClient,
+    private simulationService: SimulationGeneratorService,
+    private dialogConverterService: DialogConverterService,
+    private dialogGeneratorService: DialogGeneratorService,
+    private fileGeneratorService: FileGeneratorService,
+    private alertController: AlertController,
+    private rasaDialogGeneratorService: RasaDialogGeneratorService,
+    private popoverController: PopoverController,
+    private toastController: ToastController,
   ) {
 
   }
@@ -386,7 +386,7 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
     });
   }
 
-  estrategia: 'um-caminho-por-intencao' | 'caminho-completo-dividido-por-decisao' | 'caminho-completo-sem-divisao' = 'caminho-completo-sem-divisao';
+  estrategia: 'um-caminho-por-intencao' | 'caminho-completo-dividido-por-decisao' | 'caminho-completo-sem-divisao' | 'caminho-completo-acumulativo' = 'caminho-completo-sem-divisao';
 
   async export() {
 
@@ -403,8 +403,19 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
 
       promiseFromXML.then((val => {
         console.log('definitions', val);
-        const process = val.rootElement.rootElements.filter(e => e.$type === 'bpmn:Process')[0] as Process;
+        const root = val.rootElement;
+
+        const process = root.rootElements.filter(e => e.$type === 'bpmn:Process')[0] as Process;
         const startEvent = process.flowElements.filter(e => e.$type === 'bpmn:StartEvent')[0] as StartEvent;
+
+        let fallbackArray = undefined as Array<string>;
+        const collaboration = root.rootElements.filter(e => e.$type === 'bpmn:Collaboration')[0] as Collaboration;
+        if (collaboration) {
+          const fallback = collaboration.documentation && collaboration.documentation[0]?.text as string;
+          if (fallback) {
+            fallbackArray = fallback.replace(/[\n\r]---[\n|\r]/g, '|').split('|');
+          }
+        }
 
         console.log(this.estrategia);
         this.rasaDialogGeneratorService.estrategia = this.estrategia;
@@ -441,7 +452,7 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
         console.log('files', files);
 
 
-        this.fileGeneratorService.generate(files).then(() => {
+        this.fileGeneratorService.generate(files, fallbackArray).then(() => {
           const toast = this.toastController.create({
             message: 'File has been saved successfully.',
             duration: 3500,
@@ -450,18 +461,18 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
           toast.then(e => e.present());
         });
 
-        
 
 
-        
-          
+
+
+
         // const alert = this.alertController.create({
         //   cssClass: 'my-custom-class',
         //   header: 'Success',
         //   message: 'File saved!',
         //   buttons: ['OK']
         // });
-    
+
         // alert.then(e => e.present());
 
 

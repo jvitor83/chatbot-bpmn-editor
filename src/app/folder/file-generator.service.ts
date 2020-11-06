@@ -11,11 +11,11 @@ import JSZip from 'jszip';
 })
 export class FileGeneratorService {
   private content: string = null;
-  async generate(files: DialogFiles): Promise<void> {
+  async generate(files: DialogFiles, fallback?: Array<string>): Promise<void> {
 
 
     const intentsString = this.generateIntents(files.intents);
-    const uttersString = this.generateUtters(files.utters, files.intents);
+    const uttersString = this.generateUtters(files.utters, files.intents, fallback);
     const storiesString = this.generateStories(files.stories);
 
     let zipFile: JSZip = new JSZip();
@@ -40,7 +40,7 @@ export class FileGeneratorService {
 
     const stringMd = stories.map(storie => {
       return [
-        { h2: storie.name },
+        { h2: `story_${storie.name}` },
         // { ul: ['intent', { ul: ['utter1', 'utter2'] }] }
         {
           ul_star: storie.path.map(caminho => ([caminho.intent.name, { ul: caminho.utters.map(u => (u.name)) }]))
@@ -114,9 +114,10 @@ export class FileGeneratorService {
     return resposta;
   }
 
-  generateUtters(utters: Utter[], intents: Intent[]) {
+  generateUtters(utters: Utter[], intents: Intent[], fallback = ['Sorry, i couldnt understand what you meant! Please try again!']) {
+    const fallbackObj = fallback.map(r => ({ text: r }));
     const objetoDasProps = {
-      utter_fallback: [{ text: "Sorry, i couldnt understand what you meant! Please try again!" }]
+      utter_fallback: fallbackObj
     };
     utters.map(utter => {
       objetoDasProps[utter.name] = utter.items.map(i => ({ text: `${i}` }));

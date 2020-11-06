@@ -8,7 +8,7 @@ import { AnswerUtter, Dialog, QuestionIntent } from '../dialog.service';
 export class RasaDialogGeneratorService {
 
 
-  estrategia: 'um-caminho-por-intencao' | 'caminho-completo-dividido-por-decisao' | 'caminho-completo-sem-divisao' = 'caminho-completo-sem-divisao';
+  estrategia: 'um-caminho-por-intencao' | 'caminho-completo-dividido-por-decisao' | 'caminho-completo-sem-divisao' | 'caminho-completo-acumulativo' = 'caminho-completo-sem-divisao';
 
   constructor() { }
 
@@ -63,7 +63,7 @@ export class RasaDialogGeneratorService {
         // Devo chamar a recursao para que adicione o sequence/seta como intent
         const sequence = elementosDestino[index];
         // Se a estrategia for de criar um caminho
-        if (this.estrategia === 'caminho-completo-dividido-por-decisao' || this.estrategia === 'caminho-completo-sem-divisao') {
+        if (this.estrategia === 'caminho-completo-dividido-por-decisao' || this.estrategia === 'caminho-completo-sem-divisao' || this.estrategia === 'caminho-completo-acumulativo') {
           // Devo clonar o caminho atual
           const caminhoClonado = JSON.parse(JSON.stringify(dialogo)) as Dialog;
           // adicionar na lista dos caminhos
@@ -76,6 +76,13 @@ export class RasaDialogGeneratorService {
             this.arrayRemove(dialogos, dialogo);
           }
           this.recursiveCompletePath(proximoSequenceElement, caminhoClonado, dialogos);
+          if (this.estrategia === 'caminho-completo-acumulativo') {
+            // Crio novo dialogo
+            const dialogoNovo = { id: caminhoClonado.id + '_' + index, name: caminhoClonado.name + '_' + index, items: [] } as Dialog;
+            dialogos.push(dialogoNovo);
+            // Passo para a recursao continuar montando o caminho
+            this.recursiveCompletePath(proximoSequenceElement, dialogoNovo, dialogos);
+          }
         } else if (this.estrategia === 'um-caminho-por-intencao') {
           dialogo = { id: sequence.id, name: sequence.id, items: [] } as Dialog;
           dialogos.push(dialogo);
