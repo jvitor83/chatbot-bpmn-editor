@@ -8,7 +8,7 @@ import { AnswerUtter, Dialog, QuestionIntent } from '../dialog.service';
 export class RasaDialogGeneratorService {
 
 
-  estrategia: 'um-caminho-por-intencao' | 'caminho-completo-dividido-por-decisao' | 'caminho-completo-sem-divisao' | 'caminho-completo-acumulativo' = 'caminho-completo-sem-divisao';
+  estrategia: 'um-caminho-por-intencao' | 'caminho-completo-dividido-por-decisao' | 'caminho-completo-sem-divisao' | 'caminho-completo-acumulativo' | 'caminho-completo-acumulativo-sem-divisao' = 'caminho-completo-dividido-por-decisao';
 
   constructor() { }
 
@@ -63,7 +63,7 @@ export class RasaDialogGeneratorService {
         // Devo chamar a recursao para que adicione o sequence/seta como intent
         const sequence = elementosDestino[index];
         // Se a estrategia for de criar um caminho
-        if (this.estrategia === 'caminho-completo-dividido-por-decisao' || this.estrategia === 'caminho-completo-sem-divisao' || this.estrategia === 'caminho-completo-acumulativo') {
+        if (this.estrategia === 'caminho-completo-dividido-por-decisao' || this.estrategia === 'caminho-completo-sem-divisao' || this.estrategia === 'caminho-completo-acumulativo' || this.estrategia === 'caminho-completo-acumulativo-sem-divisao') {
           // Devo clonar o caminho atual
           const caminhoClonado = JSON.parse(JSON.stringify(dialogo)) as Dialog;
           // adicionar na lista dos caminhos
@@ -72,11 +72,11 @@ export class RasaDialogGeneratorService {
           const proximoSequenceElement = sequence.targetRef;
           caminhoClonado.id = proximoSequenceElement.id;
           caminhoClonado.name = proximoSequenceElement.id;
-          if (this.estrategia === 'caminho-completo-sem-divisao') {
+          if (this.estrategia === 'caminho-completo-sem-divisao' || this.estrategia === 'caminho-completo-acumulativo-sem-divisao') {
             this.arrayRemove(dialogos, dialogo);
           }
           this.recursiveCompletePath(proximoSequenceElement, caminhoClonado, dialogos);
-          if (this.estrategia === 'caminho-completo-acumulativo') {
+          if (this.estrategia === 'caminho-completo-acumulativo' || this.estrategia === 'caminho-completo-acumulativo-sem-divisao') {
             // Crio novo dialogo
             const dialogoNovo = { id: caminhoClonado.id + '_' + index, name: caminhoClonado.name + '_' + index, items: [] } as Dialog;
             dialogos.push(dialogoNovo);

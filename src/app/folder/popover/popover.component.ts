@@ -7,14 +7,14 @@ import { PopoverController } from '@ionic/angular';
 })
 export class PopoverComponent implements OnInit {
 
-  estrategia: 'um-caminho-por-intencao' | 'caminho-completo-dividido-por-decisao' | 'caminho-completo-sem-divisao' | 'caminho-completo-acumulativo' = null;
+  estrategia: 'um-caminho-por-intencao' | 'caminho-completo-dividido-por-decisao' | 'caminho-completo-sem-divisao' | 'caminho-completo-acumulativo' | 'caminho-completo-acumulativo-sem-divisao' = null;
 
   constructor(private popoverController: PopoverController) { }
 
   ngOnInit(): void {
     this.estrategia = localStorage.getItem('estrategia') as any;
     if (this.estrategia == null) {
-      this.estrategia = 'caminho-completo-acumulativo';
+      this.estrategia = 'caminho-completo-dividido-por-decisao';
       localStorage.setItem('estrategia', this.estrategia);
     }
   }

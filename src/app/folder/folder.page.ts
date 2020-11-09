@@ -386,7 +386,7 @@ export class FolderPage implements OnInit, AfterContentInit, OnChanges, OnDestro
     });
   }
 
-  estrategia: 'um-caminho-por-intencao' | 'caminho-completo-dividido-por-decisao' | 'caminho-completo-sem-divisao' | 'caminho-completo-acumulativo' = 'caminho-completo-sem-divisao';
+  estrategia: 'um-caminho-por-intencao' | 'caminho-completo-dividido-por-decisao' | 'caminho-completo-sem-divisao' | 'caminho-completo-acumulativo' = 'caminho-completo-dividido-por-decisao';
 
   async export() {
 
