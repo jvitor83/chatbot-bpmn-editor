@@ -27,16 +27,17 @@ export class RasaDialogGeneratorService {
     }
   }
 
-  recursiveCompletePath(elementoAtual: FlowElement, dialogo: Dialog, dialogos: Dialog[]) {
+  recursiveCompletePath(elementoAtual: FlowElement, dialogo: Dialog, dialogos: Dialog[], indice = 0) {
     // Se o elemento atual for o inicial
     if (elementoAtual.$type === 'bpmn:StartEvent') {
       // Ignoro o 'elemento inicial' e passa o proximo para ser tratado
       const sequence = (elementoAtual as SendTask).outgoing[0];
-      dialogo = { id: sequence.id, name: sequence.id, items: [] } as Dialog;
+      indice = indice + 1;
+      dialogo = { id: sequence.id + '_' + indice, name: sequence.id + '_' + indice, items: [] } as Dialog;
       dialogos.push(dialogo);
       // Chama a recursao para que seja adicionado na proxima interacao
       const proximoElemento = sequence.targetRef;
-      this.recursiveCompletePath(proximoElemento, dialogo, dialogos);
+      this.recursiveCompletePath(proximoElemento, dialogo, dialogos, indice);
     } else if (elementoAtual.$type === 'bpmn:UserTask') {
       // Se for seta, devo adicionar
       // tslint:disable-next-line: max-line-length
@@ -45,13 +46,13 @@ export class RasaDialogGeneratorService {
       this.adicionar(intent, dialogo);
       // Pego o elemento target e chamo o recursivo para trata-lo
       const proximoElemento = this.getNextElement(elementoAtual) as FlowNode;
-      this.recursiveCompletePath(proximoElemento, dialogo, dialogos);
+      this.recursiveCompletePath(proximoElemento, dialogo, dialogos, indice);
     } else if (elementoAtual.$type === 'bpmn:ServiceTask') {
       // tslint:disable-next-line: max-line-length
       const utter = { id: elementoAtual.id, description: elementoAtual.documentation[0].text, type: 'AnswerUtter', underlyingItem: elementoAtual } as unknown as AnswerUtter;
       this.adicionar(utter, dialogo);
       const proximoElemento = this.getNextElement(elementoAtual) as FlowNode;
-      this.recursiveCompletePath(proximoElemento, dialogo, dialogos);
+      this.recursiveCompletePath(proximoElemento, dialogo, dialogos, indice);
     } else if (elementoAtual.$type === 'bpmn:EndEvent') {
       // Nada por enquanto
     } else if (elementoAtual.$type === 'bpmn:ExclusiveGateway') {
@@ -68,31 +69,34 @@ export class RasaDialogGeneratorService {
           const caminhoClonado = JSON.parse(JSON.stringify(dialogo)) as Dialog;
           // adicionar na lista dos caminhos
           dialogos.push(caminhoClonado);
+          indice = indice + 1;
           // passar para a recursao continuar montando o caminho
           const proximoSequenceElement = sequence.targetRef;
-          caminhoClonado.id = proximoSequenceElement.id;
-          caminhoClonado.name = proximoSequenceElement.id;
+          caminhoClonado.id = proximoSequenceElement.id + '_' + index;
+          caminhoClonado.name = proximoSequenceElement.id + '_' + index;
           if (this.estrategia === 'caminho-completo-sem-divisao' || this.estrategia === 'caminho-completo-acumulativo-sem-divisao') {
             this.arrayRemove(dialogos, dialogo);
           }
-          this.recursiveCompletePath(proximoSequenceElement, caminhoClonado, dialogos);
+          this.recursiveCompletePath(proximoSequenceElement, caminhoClonado, dialogos, indice);
           if (this.estrategia === 'caminho-completo-acumulativo' || this.estrategia === 'caminho-completo-acumulativo-sem-divisao') {
             // Crio novo dialogo
-            const dialogoNovo = { id: caminhoClonado.id + '_' + index, name: caminhoClonado.name + '_' + index, items: [] } as Dialog;
+            indice = indice + 1;
+            const dialogoNovo = { id: caminhoClonado.id + '_' + indice + '_' + index, name: caminhoClonado.name + '_' + indice + '_' + index, items: [] } as Dialog;
             dialogos.push(dialogoNovo);
             // Passo para a recursao continuar montando o caminho
-            this.recursiveCompletePath(proximoSequenceElement, dialogoNovo, dialogos);
+            this.recursiveCompletePath(proximoSequenceElement, dialogoNovo, dialogos, indice);
           }
         } else if (this.estrategia === 'um-caminho-por-intencao') {
-          dialogo = { id: sequence.id, name: sequence.id, items: [] } as Dialog;
+          indice = indice + 1;
+          dialogo = { id: sequence.id + '_' + indice + '_' + index, name: sequence.id + '_' + indice + '_' + index, items: [] } as Dialog;
           dialogos.push(dialogo);
           const proximoSequenceElement = sequence.targetRef;
-          this.recursiveCompletePath(proximoSequenceElement, dialogo, dialogos);
+          this.recursiveCompletePath(proximoSequenceElement, dialogo, dialogos, indice);
         }
       }
     } else {
       const proximoElemento = this.getNextElement(elementoAtual) as FlowNode;
-      this.recursiveCompletePath(proximoElemento, dialogo, dialogos);
+      this.recursiveCompletePath(proximoElemento, dialogo, dialogos, indice);
     }
   }
   getNextElement(elementoAtual: FlowElement): FlowNode {
