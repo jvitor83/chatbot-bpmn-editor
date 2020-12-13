@@ -46,13 +46,17 @@ export class RasaDialogGeneratorService {
       this.adicionar(intent, dialogo);
       // Pego o elemento target e chamo o recursivo para trata-lo
       const proximoElemento = this.getNextElement(elementoAtual) as FlowNode;
-      this.recursiveCompletePath(proximoElemento, dialogo, dialogos, indice);
+      if (proximoElemento) {
+        this.recursiveCompletePath(proximoElemento, dialogo, dialogos, indice);
+      }
     } else if (elementoAtual.$type === 'bpmn:ServiceTask') {
       // tslint:disable-next-line: max-line-length
       const utter = { id: elementoAtual.id, description: elementoAtual.documentation[0].text, type: 'AnswerUtter', underlyingItem: elementoAtual } as unknown as AnswerUtter;
       this.adicionar(utter, dialogo);
       const proximoElemento = this.getNextElement(elementoAtual) as FlowNode;
-      this.recursiveCompletePath(proximoElemento, dialogo, dialogos, indice);
+      if (proximoElemento) {
+        this.recursiveCompletePath(proximoElemento, dialogo, dialogos, indice);
+      }
     } else if (elementoAtual.$type === 'bpmn:EndEvent') {
       // Nada por enquanto
     } else if (elementoAtual.$type === 'bpmn:ExclusiveGateway') {
@@ -96,7 +100,9 @@ export class RasaDialogGeneratorService {
       }
     } else {
       const proximoElemento = this.getNextElement(elementoAtual) as FlowNode;
-      this.recursiveCompletePath(proximoElemento, dialogo, dialogos, indice);
+      if (proximoElemento) {
+        this.recursiveCompletePath(proximoElemento, dialogo, dialogos, indice);
+      }
     }
   }
   getNextElement(elementoAtual: FlowElement): FlowNode {
@@ -107,9 +113,13 @@ export class RasaDialogGeneratorService {
       const collaborations = definitionElement.rootElements.filter(r => r.$type === 'bpmn:Collaboration');
       const collaboration = collaborations[0] as Collaboration;
       const flowArray = collaboration.messageFlows.filter(m => (m.sourceRef as unknown as FlowNode).id === elementoAtual.id);
-      const flow = flowArray[0];
-      const target = flow.targetRef;
-      return target as unknown as FlowNode;
+      if (flowArray && flowArray.length > 0) {
+        const flow = flowArray[0];
+        const target = flow.targetRef;
+        return target as unknown as FlowNode;
+      } else {
+        return null;
+      }
     }
   }
   recursive(elementoAtual: FlowElement, dialogo: Dialog, dialogos: Dialog[]) {
